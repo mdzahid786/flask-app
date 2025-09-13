@@ -35,4 +35,4 @@ def getData():
     return jsonify({"message":"success"})
 
 if __name__ == "__main__":
-    app.run("localhost", port=port, debug=True)
+    app.run("0.0.0.0", port=port, debug=True)
