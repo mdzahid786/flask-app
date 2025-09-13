@@ -17,6 +17,37 @@ spec:
           image: mdzahid786/flask-app-backend:latest
           ports:
             - containerPort: 5000
+          env:
+            - name: BACKEND_STORAGE_PATH
+              value: "/data"
+          volumeMounts:
+            - name: backend-data
+              mountPath: /data
+          # Liveness/readiness probes (adjust paths if needed)
+          readinessProbe:
+            httpGet:
+              path: /api/health
+              port: 5000
+            initialDelaySeconds: 5
+            periodSeconds: 10
+            failureThreshold: 3
+          livenessProbe:
+            httpGet:
+              path: /api/health
+              port: 5000
+            initialDelaySeconds: 15
+            periodSeconds: 20
+          resources:
+            requests:
+              cpu: "100m"
+              memory: "128Mi"
+            limits:
+              cpu: "500m"
+              memory: "512Mi"
+      volumes:
+        - name: backend-data
+          persistentVolumeClaim:
+            claimName: backend-storage
 ---
 apiVersion: v1
 kind: Service
@@ -27,6 +58,6 @@ spec:
     app: backend-api
   ports:
     - protocol: TCP
-      port: 80
-      targetPort: 4000
+      port: 5000
+      targetPort: 5000
   type: LoadBalancer
