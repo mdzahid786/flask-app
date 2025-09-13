@@ -10,7 +10,7 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      # Step 1: Checkout code
+      # Step 1: Checkout repo
       - name: Checkout repository
         uses: actions/checkout@v3
 
@@ -21,10 +21,28 @@ jobs:
           username: ${{ secrets.DOCKER_HUB_USERNAME }}
           password: ${{ secrets.DOCKER_HUB_PASSWORD }}
 
-      # Step 3: Build images using docker-compose
-      - name: Build images
-        run: docker-compose -f docker-compose.yml build
+      # Step 3: Build & Tag images
+      - name: Build backend and frontend images
+        run: |
+          COMMIT_SHA=${GITHUB_SHA::7}   # short commit SHA (7 chars)
 
-      # Step 4: Push images to Docker Hub
-      - name: Push images
-        run: docker-compose -f docker-compose.yml push
+          # Backend
+          docker build -t ${{ secrets.DOCKER_HUB_USERNAME }}/flask-app-backend:latest ./backend
+          docker tag ${{ secrets.DOCKER_HUB_USERNAME }}/flask-app-backend:latest ${{ secrets.DOCKER_HUB_USERNAME }}/flask-app-backend:$COMMIT_SHA
+
+          # Frontend
+          docker build -t ${{ secrets.DOCKER_HUB_USERNAME }}/flask-app-frontend:latest ./frontend
+          docker tag ${{ secrets.DOCKER_HUB_USERNAME }}/flask-app-frontend:latest ${{ secrets.DOCKER_HUB_USERNAME }}/flask-app-frontend:$COMMIT_SHA
+
+      # Step 4: Push images
+      - name: Push backend and frontend images
+        run: |
+          COMMIT_SHA=${GITHUB_SHA::7}
+
+          # Push backend
+          docker push ${{ secrets.DOCKER_HUB_USERNAME }}/flask-app-backend:latest
+          docker push ${{ secrets.DOCKER_HUB_USERNAME }}/flask-app-backend:$COMMIT_SHA
+
+          # Push frontend
+          docker push ${{ secrets.DOCKER_HUB_USERNAME }}/flask-app-frontend:latest
+          docker push ${{ secrets.DOCKER_HUB_USERNAME }}/flask-app-frontend:$COMMIT_SHA
