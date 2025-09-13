@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Create User</title>
+  </head>
+  <body>
+    <div
+      style="
+        width: 70%;
+        margin: 0 auto;
+        border: 1px solid gray;
+        padding: 20px 20px;
+      "
+    >
+      <h1>Create User</h1>
+      <p style="color: green">
+        <%= typeof success !== 'undefined' ? success : '' %>
+      </p>
+      <form action="/submit" method="post">
+        <div style="margin: 10px">
+          <label>Name</label>
+          <div style="width: 100%; margin-top: 5px">
+            <input
+              type="text"
+              name="name"
+              value="<%= typeof name !== 'undefined' ? name : '' %>"
+              placeholder="Enter name"
+            />
+          </div>
+          <% if (typeof error !== "undefined" && error["name"]) { %>
+          <p style="color: red"><%= error["name"] %></p>
+          <% } %>
+        </div>
+        <div style="margin: 10px">
+          <label>Age</label>
+          <div style="width: 100%; margin-top: 5px">
+            <input
+              type="number"
+              name="age"
+              value="<%= typeof age !== 'undefined' ? age : '' %>"
+              placeholder="Enter age"
+            />
+          </div>
+          <% if (typeof error !== "undefined" && error["age"]) { %>
+          <p style="color: red"><%= error["age"] %></p>
+          <% } %>
+        </div>
+        <div style="margin: 10px">
+          <div style="width: 100%; margin-top: 5px">
+            <input type="submit" name="submit" value="Submit" />
+          </div>
+        </div>
+      </form>
+    </div>
+  </body>
+</html>

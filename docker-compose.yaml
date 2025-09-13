@@ -1,0 +1,38 @@
+services:
+  backend:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    image: mdzahid786/flask-app-backend:latest
+    container_name: flask-app-backend
+    hostname: backend
+    ports:
+      - ${BACK_PORT}:${BACK_PORT}
+    environment:
+      - PORT=${BACK_PORT}
+    networks:
+      - flaskAppDocker
+    volumes:
+      - ./backend:/backend
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+    container_name: flask-app-frontend
+    image: mdzahid786/flask-app-frontend:latest
+    hostname: frontend
+    ports:
+      - ${FRONT_PORT}:${FRONT_PORT}
+    environment:
+      - PORT=${FRONT_PORT}
+      - FRONTEND_URL=${FRONTEND_URL}
+      - BACKEND_URL=${BACKEND_URL}
+    networks:
+      - flaskAppDocker
+    depends_on:
+      - backend
+    volumes:
+      - ./frontend:/frontend
+networks:
+  flaskAppDocker:
+    driver: bridge
