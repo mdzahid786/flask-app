@@ -1,16 +1,18 @@
-FROM python:3.14.0rc2-slim-trixie
+# Use a lightweight Python image
+FROM python:3.10-slim
 
-WORKDIR /backend
+# Set working directory
+WORKDIR /app
 
-# Install dependencies
-COPY requirements.txt .
-RUN pip install --no-cache-dir --upgrade pip \
-    && pip install --no-cache-dir -r requirements.txt
+# Copy requirements (if you have one)
+COPY requirements.txt ./
+RUN pip install --no-cache-dir -r requirements.txt
 
+# Copy source code
 COPY . .
 
-#ENV PORT=5000
+# Expose port
+EXPOSE 5000
 
-#EXPOSE 5000
-
-CMD ["flask", "run", "--host=0.0.0.0", "--port=5000"]
+# Run Flask app
+CMD ["python", "app.py"]
