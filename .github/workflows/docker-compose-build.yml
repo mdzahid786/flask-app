@@ -1,9 +1,11 @@
-name: Build and Push with Docker Compose
+name: Build and Push Docker Images
 
 on:
   push:
     branches:
-      - dynamic-build-code   # run only when code is merged into master
+      - dynamic-build-code
+  release:
+    types: [published]
 
 jobs:
   build:
@@ -14,35 +16,59 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v3
 
-      # Step 2: Login to Docker Hub
+      # Step 2: Detect changes (backend / frontend)
+      - name: Detect changed services
+        id: changes
+        uses: dorny/paths-filter@v3
+        with:
+          filters: |
+            backend:
+              - 'backend/**'
+            frontend:
+              - 'frontend/**'
+
+      # Step 3: Log in to Docker Hub
       - name: Log in to Docker Hub
         uses: docker/login-action@v2
         with:
           username: ${{ secrets.DOCKER_HUB_USERNAME }}
           password: ${{ secrets.DOCKER_HUB_PASSWORD }}
 
-      # Step 3: Build & Tag images
-      - name: Build backend and frontend images
+      # Step 4: Set tags
+      - name: Set image tags
+        id: vars
         run: |
-          COMMIT_SHA=${GITHUB_SHA::7}   # short commit SHA (7 chars)
+          echo "sha_tag=${GITHUB_SHA::7}" >> $GITHUB_ENV
+          if [[ "${GITHUB_REF}" == refs/tags/* ]]; then
+            echo "release_tag=${GITHUB_REF#refs/tags/}" >> $GITHUB_ENV
+          else
+            echo "release_tag=" >> $GITHUB_ENV
+          fi
 
-          # Backend
-          docker build -t ${{ secrets.DOCKER_HUB_USERNAME }}/flask-app-backend:latest ./backend
-          docker tag ${{ secrets.DOCKER_HUB_USERNAME }}/flask-app-backend:latest ${{ secrets.DOCKER_HUB_USERNAME }}/flask-app-backend:$COMMIT_SHA
-
-          # Frontend
-          docker build -t ${{ secrets.DOCKER_HUB_USERNAME }}/flask-app-frontend:latest ./frontend
-          docker tag ${{ secrets.DOCKER_HUB_USERNAME }}/flask-app-frontend:latest ${{ secrets.DOCKER_HUB_USERNAME }}/flask-app-frontend:$COMMIT_SHA
-
-      # Step 4: Push images
-      - name: Push backend and frontend images
+      # Step 5: Build & Push Backend (only if changed)
+      - name: Build & Push Backend
+        if: steps.changes.outputs.backend == 'true'
         run: |
-          COMMIT_SHA=${GITHUB_SHA::7}
+          IMAGE=${{ secrets.DOCKER_HUB_USERNAME }}/flask-app-backend
+          docker build -t $IMAGE:latest ./backend
+          docker tag $IMAGE:latest $IMAGE:${sha_tag}
+          docker push $IMAGE:latest
+          docker push $IMAGE:${sha_tag}
+          if [ -n "${release_tag}" ]; then
+            docker tag $IMAGE:latest $IMAGE:${release_tag}
+            docker push $IMAGE:${release_tag}
+          fi
 
-          # Push backend
-          docker push ${{ secrets.DOCKER_HUB_USERNAME }}/flask-app-backend:latest
-          docker push ${{ secrets.DOCKER_HUB_USERNAME }}/flask-app-backend:$COMMIT_SHA
-
-          # Push frontend
-          docker push ${{ secrets.DOCKER_HUB_USERNAME }}/flask-app-frontend:latest
-          docker push ${{ secrets.DOCKER_HUB_USERNAME }}/flask-app-frontend:$COMMIT_SHA
+      # Step 6: Build & Push Frontend (only if changed)
+      - name: Build & Push Frontend
+        if: steps.changes.outputs.frontend == 'true'
+        run: |
+          IMAGE=${{ secrets.DOCKER_HUB_USERNAME }}/flask-app-frontend
+          docker build -t $IMAGE:latest ./frontend
+          docker tag $IMAGE:latest $IMAGE:${sha_tag}
+          docker push $IMAGE:latest
+          docker push $IMAGE:${sha_tag}
+          if [ -n "${release_tag}" ]; then
+            docker tag $IMAGE:latest $IMAGE:${release_tag}
+            docker push $IMAGE:${release_tag}
+          fi
