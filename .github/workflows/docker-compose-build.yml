@@ -1,0 +1,30 @@
+name: Build and Push with Docker Compose
+
+on:
+  push:
+    branches:
+      - dynamic-build-code   # run only when code is merged into master
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      # Step 1: Checkout code
+      - name: Checkout repository
+        uses: actions/checkout@v3
+
+      # Step 2: Login to Docker Hub
+      - name: Log in to Docker Hub
+        uses: docker/login-action@v2
+        with:
+          username: ${{ secrets.DOCKER_HUB_USERNAME }}
+          password: ${{ secrets.DOCKER_HUB_PASSWORD }}
+
+      # Step 3: Build images using docker-compose
+      - name: Build images
+        run: docker-compose -f docker-compose.yml build
+
+      # Step 4: Push images to Docker Hub
+      - name: Push images
+        run: docker-compose -f docker-compose.yml push
