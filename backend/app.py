@@ -7,9 +7,8 @@ load_dotenv()
 #uri = os.getenv('MONGO_URL')
 port = int(os.getenv('PORT', 5000))
 
-@app.route("/api/healthy")
+@app.route("/api/health")
 def health():
-    print("Health")
     return jsonify({"message":"Healthy..."})
 
 @app.route("/api/submit", methods=["POST"])
