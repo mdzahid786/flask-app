@@ -1,0 +1,10 @@
+# frontend-configmap.yaml
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: frontend-config
+  namespace: flask-app
+data:
+  PORT: "8000"
+  FRONTEND_URL: "http://localhost:8000" # for redirects/cookies in browser
+  BACKEND_URL: "http://backend:5000" # internal cluster DNS to reach backend

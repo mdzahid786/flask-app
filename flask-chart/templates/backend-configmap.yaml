@@ -1,0 +1,8 @@
+# backend-configmap.yaml
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: backend-config
+  namespace: flask-app
+data:
+  PORT: "5000"
