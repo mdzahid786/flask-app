@@ -3,7 +3,7 @@ kind: Deployment
 metadata:
   name: backend-api
 spec:
-  replicas: 1
+  replicas: 2
   selector:
     matchLabels:
       app: backend-api
@@ -68,4 +68,4 @@ spec:
     - protocol: TCP
       port: 5000
       targetPort: 5000
-  type: LoadBalancer
+  # type: LoadBalancer
