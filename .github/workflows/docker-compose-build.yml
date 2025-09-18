@@ -3,7 +3,7 @@ name: Build and Push Docker Images
 on:
   push:
     branches:
-      - dynamic-build-code
+      - master
   release:
     types: [published]
 
@@ -62,7 +62,7 @@ jobs:
       # Step 6: Build & Push Frontend (only if changed)
       - name: Build & Push Frontend
         if: steps.changes.outputs.frontend == 'true'
-        run: |
+        run: | 
           IMAGE=${{ secrets.DOCKER_HUB_USERNAME }}/flask-app-frontend
           docker build -t $IMAGE:latest ./frontend
           docker tag $IMAGE:latest $IMAGE:${sha_tag}
