@@ -9,7 +9,7 @@ port = int(os.getenv('PORT', 5000))
 storage_path = os.getenv("BACKEND_STORAGE_PATH", "/data")
 os.makedirs(storage_path, exist_ok=True)
 data_file = os.path.join(storage_path, "test.json")
-@app.route("/api/health")
+@app.route("/api/health") 
 def health():
     return jsonify({"message":"Healthy..."})
 
