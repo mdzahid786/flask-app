@@ -6,7 +6,7 @@ apiVersion: v1
 kind: Service
 metadata:
   name: backend
-  namespace: flask-app
+  namespace: flask-app-chart
   labels:
     app: flask-backend
 spec:

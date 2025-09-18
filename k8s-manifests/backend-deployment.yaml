@@ -27,10 +27,10 @@ spec:
                 name: backend-config
           env:
             - name: BACKEND_STORAGE_PATH
-              value: "/data"
+              value: "/data" # Thid is the path of container inner storage
           volumeMounts:
             - name: backend-data
-              mountPath: /data
+              mountPath: /data # Thid is the path of container inner storage
           # Liveness/readiness probes (adjust paths if needed)
           readinessProbe:
             httpGet:

@@ -20,7 +20,7 @@ app.use(
 app.set("views", path.join(__dirname, "views"));
 app.set("view engine", "ejs");
 
-const PORT = process.env.PORT || "8000";
+const PORT = process.env.PORT || 8000;
 const FRONTEND_URL = process.env.FRONTEND_URL || "http://localhost:8000";
 const BACKEND_URL = process.env.BACKEND_URL || "http://localhost:5000";
 // Middleware to parse JSON body
@@ -75,6 +75,6 @@ app.post("/submit", async (req, res) => {
   return res.redirect("/form");
 });
 
-app.listen(PORT, () => {
-  console.log(`Server is running on PORT ${FRONTEND_URL}/health`);
+app.listen(PORT, "0.0.0.0", () => {
+  console.log(`Server is running on http://0.0.0.0:${PORT}/health`);
 });

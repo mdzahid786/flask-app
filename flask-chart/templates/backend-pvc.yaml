@@ -3,7 +3,7 @@ apiVersion: v1
 kind: PersistentVolumeClaim
 metadata:
   name: backend-storage
-  namespace: flask-app
+  namespace: flask-app-chart
 spec:
   accessModes: ["ReadWriteOnce"]
   resources:

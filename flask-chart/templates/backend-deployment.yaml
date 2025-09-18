@@ -3,7 +3,7 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: flask-app-backend
-  namespace: flask-app
+  namespace: flask-app-chart
   labels:
     app: flask-backend
 spec:

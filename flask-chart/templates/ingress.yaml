@@ -10,7 +10,7 @@ apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:
   name: flask-app-ingress
-  namespace: flask-app
+  namespace: flask-app-chart
 spec:
   ingressClassName: nginx # <--- use this instead of annotation
   rules:

@@ -3,7 +3,7 @@ apiVersion: autoscaling/v2
 kind: HorizontalPodAutoscaler
 metadata:
   name: frontend-hpa
-  namespace: flask-app
+  namespace: flask-app-chart
 spec:
   scaleTargetRef:
     apiVersion: apps/v1
