@@ -19,7 +19,7 @@ spec:
       containers:
         - name: backend
           image: mdzahid786/flask-app-backend:latest
-          imagePullPolicy: IfNotPresent
+          imagePullPolicy: Always
           ports:
             - containerPort: 5000
           envFrom:
@@ -27,10 +27,10 @@ spec:
                 name: backend-config
           env:
             - name: BACKEND_STORAGE_PATH
-              value: "/data" # Thid is the path of container inner storage
+              value: "/backend/data" # This is the path of container inner storage
           volumeMounts:
             - name: backend-data
-              mountPath: /data # Thid is the path of container inner storage
+              mountPath: /backend/data # This is the path of container inner storage
           # Liveness/readiness probes (adjust paths if needed)
           readinessProbe:
             httpGet:

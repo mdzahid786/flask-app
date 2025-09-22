@@ -9,5 +9,5 @@ spec:
   accessModes:
     - ReadWriteOnce
   hostPath:
-    path: "/data"
+    path: "/run/desktop/mnt/host/c/containervolume/flask-backend/data"
   persistentVolumeReclaimPolicy: Retain

@@ -13,8 +13,23 @@ data_file = os.path.join(storage_path, "test.json")
 def health():
     return jsonify({"message":"Healthy..."})
 
+@app.route("/api/users", methods=["GET"])
+def users():
+    try:
+        with open(data_file, "r+") as file:
+            content = file.read().strip()
+            if content:
+                extended_data = json.loads(content)
+                print(extended_data)
+            else:
+                extended_data = []
+    except:
+        extended_data = []
+    #print(extended_data)
+    return jsonify(extended_data)
+
 @app.route("/api/submit", methods=["POST"])
-def getData():
+def submit():
     data = request.json
     if not data:
         return jsonify({"error": "No JSON data received"}), 400
@@ -23,7 +38,6 @@ def getData():
             content = file.read().strip()
             if content:
                 extended_data = json.loads(content)
-                print(extended_data)
             else:
                 extended_data = []
     except:

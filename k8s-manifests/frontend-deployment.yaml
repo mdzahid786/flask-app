@@ -19,7 +19,7 @@ spec:
       containers:
         - name: frontend
           image: mdzahid786/flask-app-frontend:latest
-          imagePullPolicy: IfNotPresent
+          imagePullPolicy: Always # IfNotPresent
           ports:
             - containerPort: 8000
           envFrom:
